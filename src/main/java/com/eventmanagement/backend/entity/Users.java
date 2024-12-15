@@ -1,9 +1,7 @@
 package com.eventmanagement.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "Users")
@@ -26,5 +24,13 @@ public class Users {
     @Column(name = "Password")
     private String password;
 
+    @Column(name = "role")
+    private String role = Role.USER;
+
+   public static class Role{
+       public static final String USER = "USER";
+       public static final String ADMIN = "ADMIN";
+
+   }
 
 }
