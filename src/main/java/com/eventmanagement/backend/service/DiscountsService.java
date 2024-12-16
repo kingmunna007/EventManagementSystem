@@ -13,7 +13,7 @@ public class DiscountsService {
     private DiscountsRepository discountsRepository;
 
     public Discounts getDiscountByCode(String code) {
-        return (Discounts) discountsRepository.findById(code).orElse(null);
+        return (Discounts) discountsRepository.findByCode(code).orElse(null);
     }
 
     public BigDecimal applyDiscount(double basePrice, String discountCode) {
@@ -35,7 +35,7 @@ public class DiscountsService {
     }
 
     public boolean isDiscountValid(String code) {
-        return discountsRepository.existsById(code);
+        return discountsRepository.existsByCode(code);
     }
 
 }

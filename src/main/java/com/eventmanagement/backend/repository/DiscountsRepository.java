@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface DiscountsRepository extends JpaRepository<Discounts, Long> {
-    boolean existsById(String code);
+    boolean existsByCode(String code);
 
-    Optional<Object> findById(String code);
+    Optional<Object> findByCode(String code);
 }

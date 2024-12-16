@@ -32,7 +32,7 @@ public class BookingsService {
         // Fetch the user, event, and discount
         Users user = usersRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Events event = eventRepository.findById(Long.valueOf(eventId)).orElseThrow(() -> new IllegalArgumentException("Event not found"));
-        Discounts discount = (Discounts) discountRepository.findById(discountCode).orElse(null);
+        Discounts discount = (Discounts) discountRepository.findByCode(discountCode).orElse(null);
 
         // Calculate the base price based on participants and booking type (you can add your own logic here)
         BigDecimal basePrice = event.getBasePrice().multiply(BigDecimal.valueOf(participants));
