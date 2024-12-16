@@ -52,7 +52,7 @@ public class UsersController {
         usersService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    @GetMapping("/login")
     public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
         Users user = usersService.authenticateUser(email, password);
 
