@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+  }
+  
+  .navbar a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+  }
+  
+  .admin-container {
+    margin: 20px;
+  }
+  
+  h1 {
+    color: #007bff;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  button {
+    cursor: pointer;
+    padding: 5px 10px;
+    margin: 5px;
+  }
+  
+  .btn-add { background: #28a745; color: white; }
+  .btn-edit { background: #ffc107; color: black; }
+  .btn-delete { background: #dc3545; color: white; }
+  

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">Admin Dashboard</div>
+    <div class="nav-links">
+      <a href="/admin-dashboard.html">Dashboard</a>
+      <a href="/manage-events.html">Manage Events</a>
+      <a href="/manage-discounts.html">Manage Discounts</a>
+      <a href="/home.html">Logout</a>
+    </div>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div class="admin-container">
+    <h1>Admin Dashboard</h1>
+    <div class="stats">
+      <div class="stat-card">
+        <h2>Total Users</h2>
+        <p id="total-users">Loading...</p>
+      </div>
+      <div class="stat-card">
+        <h2>Total Bookings</h2>
+        <p id="total-bookings">Loading...</p>
+      </div>
+      <div class="stat-card">
+        <h2>Total Revenue</h2>
+        <p id="total-revenue">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Simulated dynamic data fetching
+    document.getElementById("total-users").innerText = "";
+    document.getElementById("total-bookings").innerText = "";
+    document.getElementById("total-revenue").innerText = "";
+  </script>
+</body>
+</html>

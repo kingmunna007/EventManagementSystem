@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Events</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">Admin Dashboard</div>
+    <div class="nav-links">
+      <a href="admin-dashboard.html">Dashboard</a>
+      <a href="manage-events.html">Manage Events</a>
+      <a href="manage-discounts.html">Manage Discounts</a>
+      <a href="/home.html">Logout</a>
+    </div>
+  </div>
+
+  <!-- Manage Events -->
+  <div class="admin-container">
+    <h1>Manage Events</h1>
+    <button onclick="addEvent()" class="btn-add">Add New Event</button>
+    <table id="events-table">
+      <thead>
+        <tr>
+          <th>Event Name</th>
+          <th>Participants</th>
+          <th>Type</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Wedding</td>
+          <td>100</td>
+          <td>VIP</td>
+          <td>
+            <button class="btn-edit" onclick="editEvent(this)">Edit</button>
+            <button class="btn-delete" onclick="deleteEvent(this)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function addEvent() {
+      const table = document.getElementById("events-table").getElementsByTagName("tbody")[0];
+      const newRow = `
+        <tr>
+          <td>New Event</td>
+          <td>50</td>
+          <td>Standard</td>
+          <td>
+            <button class="btn-edit" onclick="editEvent(this)">Edit</button>
+            <button class="btn-delete" onclick="deleteEvent(this)">Delete</button>
+          </td>
+        </tr>
+      `;
+      table.insertAdjacentHTML('beforeend', newRow);
+    }
+
+    function editEvent(button) {
+      const row = button.parentElement.parentElement;
+      const name = prompt("Edit Event Name:", row.cells[0].innerText);
+      const participants = prompt("Edit Participants:", row.cells[1].innerText);
+      const type = prompt("Edit Type:", row.cells[2].innerText);
+
+      if (name) row.cells[0].innerText = name;
+      if (participants) row.cells[1].innerText = participants;
+      if (type) row.cells[2].innerText = type;
+    }
+
+    function deleteEvent(button) {
+      button.parentElement.parentElement.remove();
+    }
+  </script>
+</body>
+</html>

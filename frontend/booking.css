@@ -1,0 +1,114 @@
+/* General Body Styling */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Navbar */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0056b3;
+    color: white;
+    padding: 10px 20px;
+  }
+  
+  .navbar .logo {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .navbar .nav-links a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .navbar .nav-links a:hover {
+    color: #f4f4f9;
+    text-decoration: underline;
+  }
+  
+  /* Confirmation Container */
+  .confirmation-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .confirmation-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    text-align: center;
+    animation: slideIn 1s ease-out;
+  }
+  
+  .success-message {
+    font-size: 24px;
+    color: #28a745;
+    margin-bottom: 20px;
+  }
+  
+  .booking-details p {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  .booking-details .status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .status.success {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  /* View Bookings Button */
+  .btn-view-bookings {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 20px;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .btn-view-bookings:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  .btn-view-bookings:active {
+    transform: scale(0.95);
+  }
+  
+  /* Animation */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

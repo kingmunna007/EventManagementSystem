@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation</title>
+  <link rel="stylesheet" href="booking.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">[LOGO]</div>
+    <div class="nav-links">
+      <a href="/home.html">Home</a>
+      <a href="/booking.html">My Bookings</a>
+      <a href="/home.html">Logout</a>
+    </div>
+  </div>
+
+  <!-- Confirmation Section -->
+  <div class="confirmation-container">
+    <div class="confirmation-card">
+      <h1 class="success-message">🎉 Booking Confirmed! 🎉</h1>
+      <div class="booking-details">
+        <p><strong>Event Name:</strong> Wedding</p>
+        <p><strong>Participants:</strong> 100</p>
+        <p><strong>Booking Type:</strong> VIP</p>
+        <p><strong>Total Paid:</strong> $9,000</p>
+        <p><strong>Payment Status:</strong> <span class="status success">Success</span></p>
+      </div>
+      <!-- View My Bookings Button -->
+      <button onclick="redirectToBookings()" class="btn-view-bookings">
+        View My Bookings
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="booking.js"></script>
+</body>
+</html>

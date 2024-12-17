@@ -1,0 +1,175 @@
+/* General Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+  }
+  
+  /* Navbar */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0056b3;
+    color: white;
+    padding: 10px 20px;
+  }
+  
+  .navbar .logo {
+    font-weight: bold;
+  }
+  
+  .navbar .nav-links a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+  }
+  
+  .navbar .nav-links a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Payment Container */
+  .payment-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0056b3;
+  }
+  
+  .details {
+    margin-bottom: 20px;
+  }
+  
+  /* Payment Tabs */
+  .tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  
+  .tab-btn {
+    padding: 10px 20px;
+    background: #ccc;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .tab-btn.active {
+    background: #0056b3;
+    color: #fff;
+  }
+  
+  .tab-btn:hover {
+    background: #0056b3;
+    color: #fff;
+  }
+  
+  /* Tab Content */
+  .tab-content {
+    display: none;
+    animation: slideIn 0.5s ease-in-out;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  .payment-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .payment-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .input-group {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .upi-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  
+  .upi-btn {
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .upi-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  .pay-btn {
+    margin-top: 30px;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .pay-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  

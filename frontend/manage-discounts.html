@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Discounts</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">Admin Dashboard</div>
+    <div class="nav-links">
+      <a href="admin-dashboard.html">Dashboard</a>
+      <a href="manage-events.html">Manage Events</a>
+      <a href="manage-discounts.html">Manage Discounts</a>
+      <a href="/home.html">Logout</a>
+    </div>
+  </div>
+
+  <!-- Manage Discounts -->
+  <div class="admin-container">
+    <h1>Manage Discounts</h1>
+    <button onclick="addCoupon()" class="btn-add">Add New Coupon</button>
+    <table id="coupons-table">
+      <thead>
+        <tr>
+          <th>Coupon Code</th>
+          <th>Discount (%)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>VIP20</td>
+          <td>20</td>
+          <td>
+            <button class="btn-edit" onclick="editCoupon(this)">Edit</button>
+            <button class="btn-delete" onclick="deleteCoupon(this)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function addCoupon() {
+      const table = document.getElementById("coupons-table").getElementsByTagName("tbody")[0];
+      const newRow = `
+        <tr>
+          <td>NEWCODE</td>
+          <td>10</td>
+          <td>
+            <button class="btn-edit" onclick="editCoupon(this)">Edit</button>
+            <button class="btn-delete" onclick="deleteCoupon(this)">Delete</button>
+          </td>
+        </tr>
+      `;
+      table.insertAdjacentHTML('beforeend', newRow);
+    }
+
+    function editCoupon(button) {
+      const row = button.parentElement.parentElement;
+      const code = prompt("Edit Coupon Code:", row.cells[0].innerText);
+      const discount = prompt("Edit Discount Percentage:", row.cells[1].innerText);
+
+      if (code) row.cells[0].innerText = code;
+      if (discount) row.cells[1].innerText = discount;
+    }
+
+    function deleteCoupon(button) {
+      button.parentElement.parentElement.remove();
+    }
+  </script>
+</body>
+</html>
