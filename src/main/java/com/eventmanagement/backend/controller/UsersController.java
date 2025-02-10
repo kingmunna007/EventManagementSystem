@@ -22,7 +22,7 @@ public class UsersController {
     private UsersService usersService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+   // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Users>> getAllUsers() {
         List<Users> users = usersService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -34,7 +34,7 @@ public class UsersController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<Users> registerUser(@RequestBody Users user) {
         Users createdUser = usersService.registerUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);

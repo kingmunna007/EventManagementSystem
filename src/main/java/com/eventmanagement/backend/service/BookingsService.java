@@ -16,29 +16,29 @@ public class BookingsService {
     private BookingsRepository bookingsRepository;
 
     @Autowired
-    private EventsRepository eventRepository;
+    private EventsRepository eventsRepository;
 
     @Autowired
     private UsersRepository usersRepository;
 
     @Autowired
-    private DiscountsRepository discountRepository;
+    private DiscountsRepository discountsRepository;
 
     @Autowired
-    private DiscountsService discountService;
+    private DiscountsService discountsService;
 
     // Method to create a booking
     public Bookings createBooking(Integer userId, Integer eventId, Integer participants, String bookingType, String discountCode) {
-        // Fetch the user, event, and discount
+
         Users user = usersRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Events event = eventRepository.findById(Long.valueOf(eventId)).orElseThrow(() -> new IllegalArgumentException("Event not found"));
-        Discounts discount = (Discounts) discountRepository.findByCode(discountCode).orElse(null);
+        Events event = eventsRepository.findById(Long.valueOf(eventId)).orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        Discounts discount = (Discounts) discountsRepository.findByCode(discountCode).orElse(null);
 
         // Calculate the base price based on participants and booking type (you can add your own logic here)
         BigDecimal basePrice = event.getBasePrice().multiply(BigDecimal.valueOf(participants));
 
         // Apply discount if available
-        BigDecimal finalPrice = discountService.applyDiscount(basePrice.doubleValue(), discountCode);
+        BigDecimal finalPrice = discountsService.applyDiscount(basePrice.doubleValue(), discountCode);
 
         // Create the booking object
         Bookings booking = new Bookings();

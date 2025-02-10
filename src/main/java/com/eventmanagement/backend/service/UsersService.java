@@ -2,6 +2,7 @@ package com.eventmanagement.backend.service;
 
 import com.eventmanagement.backend.entity.Users;
 import com.eventmanagement.backend.repository.UsersRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class UsersService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Users registerUser(Users user) {
         if (usersRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email is already in use.");
