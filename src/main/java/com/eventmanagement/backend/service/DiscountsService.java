@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class DiscountsService {
@@ -38,4 +39,11 @@ public class DiscountsService {
         return discountsRepository.existsByCode(code);
     }
 
+    public Discounts save(Discounts discount) {
+        return discountsRepository.save(discount);
+    }
+
+    public List<Discounts> findAll() {
+        return discountsRepository.findAll();
+    }
 }

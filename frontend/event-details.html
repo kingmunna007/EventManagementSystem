@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Details | EventEase</title>
+  <link rel="stylesheet" href="home.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">EventEase</div>
+      <ul class="nav-links">
+        <li><a href="/home.html">Home</a></li>
+        <li id="nav-booking" style="display:none;"><a href="/booking.html">Book Event</a></li>
+        <!-- <li id="nav-profile" style="display:none;"><a href="#" onclick="openProfileModal()">Profile</a></li> -->
+        <li id="nav-login"><a href="/login.html">Login</a></li>
+        <li id="nav-signup"><a href="/signup.html">Signup</a></li>
+        <li id="nav-logout" style="display:none;"><a href="#" onclick="logoutUser()">Logout</a></li>
+        <li><a href="About-us.html">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section class="event-details-section">
+      <div id="eventDetailsContainer">
+        <p>Loading event details...</p>
+      </div>
+    </section>
+    <section class="testimonial-section">
+      <div class="testimonial-card">
+        <div class="testimonial-quote">“EventEase made our wedding absolutely magical! The team handled every detail with such care and creativity. Our guests are still talking about it!”</div>
+        <div class="testimonial-author">— Priya & Rahul, Wedding Clients</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote">“Our annual conference was a huge success thanks to EventEase. Professional, reliable, and innovative!”</div>
+        <div class="testimonial-author">— Ankit S., Corporate Client</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote">“Best birthday party ever! The kids had a blast and everything was so well organized.”</div>
+        <div class="testimonial-author">— Meera D., Birthday Client</div>
+      </div>
+      <div class="trust-badge">Trusted by 100+ happy clients</div>
+    </section>
+  </main>
+  <!-- Chatbase AI Chatbot Widget (hidden by default, toggled by button) -->
+  <button id="chatbase-toggle" style="position:fixed;bottom:32px;right:32px;z-index:10000;background:#6366f1;color:#fff;border:none;border-radius:50%;width:60px;height:60px;box-shadow:0 4px 16px rgba(99,102,241,0.18);font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;">💬</button>
+  <iframe id="chatbase-iframe" src="https://www.chatbase.co/chatbot-iframe/fJKndbpqsIA4Pr94pDjiN" style="display:none;position:fixed;bottom:100px;right:32px;width:370px;height:520px;z-index:9999;border-radius:18px;box-shadow:0 4px 24px rgba(0,0,0,0.18);border:none;background:#fff;"></iframe>
+  <script>
+    const chatBtn = document.getElementById('chatbase-toggle');
+    const chatIframe = document.getElementById('chatbase-iframe');
+    chatBtn.addEventListener('click', () => {
+      if (chatIframe.style.display === 'none' || chatIframe.style.display === '') {
+        chatIframe.style.display = 'block';
+        chatBtn.style.background = '#f472b6';
+      } else {
+        chatIframe.style.display = 'none';
+        chatBtn.style.background = '#6366f1';
+      }
+    });
+    // Optional: close chat if user clicks outside iframe (not required, but can be added)
+  </script>
+  <script src="event-details.js"></script>
+</body>
+</html>

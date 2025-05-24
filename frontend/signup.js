@@ -1,4 +1,4 @@
-document.getElementById("signupForm").addEventListener("submit", function(event) {
+document.getElementById("signupForm").addEventListener("submit", async function(event) {
     event.preventDefault(); // Prevent the form from submitting
 
     // Get values from the form
@@ -18,8 +18,31 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
         return;
     }
 
-    // Simulate successful account creation (replace with real signup logic)
-    alert("Account created successfully!");
-    // Redirect to the login page or handle signup logic
-    window.location.href = "login.html"; // Redirect to login page after signup
+    // Send signup data to backend
+    try {
+        const adminUsername = 'admin user';
+        const adminPassword = 'pass3';
+        const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+        const response = await fetch('http://localhost:8080/api/users/post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': basicAuth
+            },
+            body: JSON.stringify({
+                username: name,
+                email: email,
+                password: password
+            })
+        });
+        if (response.ok) {
+            alert("Account created successfully!");
+            window.location.href = "login.html";
+        } else {
+            const error = await response.text();
+            alert("Signup failed: " + error);
+        }
+    } catch (err) {
+        alert("Signup failed: " + err.message);
+    }
 });

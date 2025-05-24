@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/discounts")
@@ -18,6 +21,9 @@ public class DiscountsController {
 
     @Autowired
     private DiscountsService discountsService;
+
+    @Autowired
+    private DiscountsRepository discountsRepository;
 
     @GetMapping("/validate/{code}")
     public ResponseEntity<String> validateDiscount(@PathVariable String code) {
@@ -42,4 +48,36 @@ public class DiscountsController {
             return new ResponseEntity<>("Discount not found", HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("")
+    public List<Discounts> getAllDiscounts() {
+        return discountsService.findAll();
+    }
+    @PostMapping("")
+    public Discounts createDiscount(@RequestBody Discounts discount) {
+        // Optionally, add validation for unique code, valid percentage, etc.
+        return discountsService.save(discount);
+    }
+
+    // Update discount percentage by code
+    @PutMapping("/{code}")
+    public ResponseEntity<Discounts> updateDiscount(@PathVariable String code, @RequestBody Map<String, Integer> body) {
+        Optional<Object> optional =  discountsRepository.findByCode(code);
+        if (optional.isEmpty()) return ResponseEntity.notFound().build();
+        Discounts discount = (Discounts) optional.get();
+        Integer percentage = body.get("percentage");
+        if (percentage == null) return ResponseEntity.badRequest().build();
+        discount.setPercentage(percentage);
+        discountsRepository.save(discount);
+        return ResponseEntity.ok(discount);
+    }
+
+    // Delete discount by code
+    @DeleteMapping("/{code}")
+    public ResponseEntity<Void> deleteDiscount(@PathVariable String code) {
+        Optional<Object> optional = discountsRepository.findByCode(code);
+        if (optional.isEmpty()) return ResponseEntity.notFound().build();
+        discountsRepository.delete((Discounts) optional.get());
+        return ResponseEntity.noContent().build();
+    }
+
 }

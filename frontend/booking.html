@@ -3,39 +3,147 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking Confirmation</title>
+  <title>Event Booking</title>
   <link rel="stylesheet" href="booking.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
   <!-- Navbar -->
   <div class="navbar">
-    <div class="logo">[LOGO]</div>
+    <div class="logo">EventEase</div>
     <div class="nav-links">
       <a href="/home.html">Home</a>
-      <a href="/booking.html">My Bookings</a>
+      <a href="/my-bookings.html">My Bookings</a>
+      <a href="#" id="nav-profile" onclick="openProfileModal()" style="display:none;">Profile</a>
       <a href="/home.html">Logout</a>
     </div>
   </div>
 
-  <!-- Confirmation Section -->
-  <div class="confirmation-container">
-    <div class="confirmation-card">
-      <h1 class="success-message">🎉 Booking Confirmed! 🎉</h1>
-      <div class="booking-details">
-        <p><strong>Event Name:</strong> Wedding</p>
-        <p><strong>Participants:</strong> 100</p>
-        <p><strong>Booking Type:</strong> VIP</p>
-        <p><strong>Total Paid:</strong> $9,000</p>
-        <p><strong>Payment Status:</strong> <span class="status success">Success</span></p>
+  <!-- Booking Form Section -->
+  <div class="booking-container">
+    <h1>Book an Event</h1>
+    <form id="bookingForm" class="booking-form">
+      <div class="form-group">
+        <label for="eventId">Event:</label>
+        <select id="eventId" name="eventId" required>
+          <option value="">Select an event</option>
+        </select>
       </div>
-      <!-- View My Bookings Button -->
-      <button onclick="redirectToBookings()" class="btn-view-bookings">
-        View My Bookings
-      </button>
+      <div class="form-group">
+        <label for="participants">Participants:</label>
+        <input type="number" id="participants" name="participants" min="1" required placeholder="Enter number of participants">
+      </div>
+      <div class="form-group">
+        <label for="bookingType">Booking Type:</label>
+        <select id="bookingType" name="bookingType" required>
+          <option value="">Select type</option>
+          <option value="STANDARD">Standard</option>
+          <option value="VIP">VIP</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="discountCode">Discount Code (optional):</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="discountCode" name="discountCode" placeholder="Enter code">
+          <button type="button" id="verifyDiscountBtn" class="mini-btn">Verify</button>
+          <span id="discountStatus"></span>
+        </div>
+      </div>
+      <div class="form-group">
+        <button type="button" id="calculatePriceBtn" class="mini-btn">Calculate Total Price</button>
+      </div>
+      <div class="form-group">
+        <label>Total Price:</label>
+        <span id="totalPrice" style="font-weight:bold;color:#007bff;">-</span>
+      </div>
+      <button type="submit" class="submit-btn">Book Event</button>
+    </form>
+    <div id="bookingResult"></div>
+    <img src="images/default-event.jpg" alt="Event Image" class="event-img" id="event-img-placeholder" style="display:none;">
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeProfileModal()">&times;</span>
+      <div class="profile-avatar" id="profileAvatar">👤</div>
+      <h2>Your Profile</h2>
+      <div id="profileDetails">Loading...</div>
+      <form id="updateProfileForm" style="display:none;">
+        <label>Name:<input type="text" id="profileName" required></label>
+        <label>Email:<input type="email" id="profileEmail" required></label>
+        <label>Password:<input type="password" id="profilePassword" placeholder="Leave blank to keep unchanged"></label>
+        <button type="submit">Update Profile</button>
+      </form>
+      <button id="editProfileBtn" style="margin-top:10px;">Edit Profile</button>
     </div>
   </div>
 
   <!-- JavaScript -->
   <script src="booking.js"></script>
+  <script>
+  function updateNavbarForAuth() {
+    const isLoggedIn = !!localStorage.getItem('userId');
+    document.getElementById('nav-profile').style.display = isLoggedIn ? '' : 'none';
+  }
+  function openProfileModal() {
+    document.getElementById('profileModal').style.display = 'flex';
+    loadProfile();
+  }
+  function closeProfileModal() {
+    document.getElementById('profileModal').style.display = 'none';
+    document.getElementById('updateProfileForm').style.display = 'none';
+    document.getElementById('editProfileBtn').style.display = '';
+  }
+  async function loadProfile() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+    const adminUsername = 'admin user';
+    const adminPassword = 'pass3';
+    const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+    const res = await fetch(`http://localhost:8080/api/users/${userId}`, { headers: { 'Authorization': basicAuth } });
+    if (res.ok) {
+      const user = await res.json();
+      document.getElementById('profileDetails').innerHTML =
+        `<b>Name:</b> ${user.username}<br><b>Email:</b> ${user.email}<br><b>Role:</b> ${user.role}`;
+      document.getElementById('profileName').value = user.username;
+      document.getElementById('profileEmail').value = user.email;
+      document.getElementById('profilePassword').value = '';
+      document.getElementById('profileAvatar').textContent = user.username ? user.username[0].toUpperCase() : '👤';
+    } else {
+      document.getElementById('profileDetails').innerHTML = 'Failed to load profile.';
+    }
+  }
+  document.getElementById('editProfileBtn').onclick = function() {
+    document.getElementById('updateProfileForm').style.display = '';
+    this.style.display = 'none';
+  };
+  document.getElementById('updateProfileForm').onsubmit = async function(e) {
+    e.preventDefault();
+    const userId = localStorage.getItem('userId');
+    const adminUsername = 'admin user';
+    const adminPassword = 'pass3';
+    const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+    const name = document.getElementById('profileName').value;
+    const email = document.getElementById('profileEmail').value;
+    const password = document.getElementById('profilePassword').value;
+    const body = { username: name, email: email };
+    if (password) body.password = password;
+    const res = await fetch(`http://localhost:8080/api/users/${userId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': basicAuth },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      alert('Profile updated!');
+      loadProfile();
+      document.getElementById('updateProfileForm').style.display = 'none';
+      document.getElementById('editProfileBtn').style.display = '';
+    } else {
+      alert('Failed to update profile.');
+    }
+  };
+  document.addEventListener('DOMContentLoaded', updateNavbarForAuth);
+  </script>
 </body>
 </html>

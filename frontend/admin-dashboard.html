@@ -5,44 +5,90 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="admin.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
   <!-- Navbar -->
   <div class="navbar">
-    <div class="logo">Admin Dashboard</div>
+    <div class="logo">EventEase</div>
     <div class="nav-links">
-      <a href="/admin-dashboard.html">Dashboard</a>
-      <a href="/manage-events.html">Manage Events</a>
-      <a href="/manage-discounts.html">Manage Discounts</a>
+      <a href="admin-dashboard.html">Dashboard</a>
+      <a href="manage-events.html">Manage Events</a>
+      <a href="manage-discounts.html">Manage Discounts</a>
+      <a href="manage-users.html">Manage Users</a>
+      <a href="manage-bookings.html">Manage Bookings</a>
       <a href="/home.html">Logout</a>
     </div>
   </div>
 
   <!-- Dashboard Content -->
   <div class="admin-container">
-    <h1>Admin Dashboard</h1>
-    <div class="stats">
-      <div class="stat-card">
-        <h2>Total Users</h2>
-        <p id="total-users">Loading...</p>
+    <h1>Welcome, <span id="adminName">Admin</span></h1>
+    <div class="dashboard-cards" style="display:flex;gap:32px;flex-wrap:wrap;margin:32px 0;">
+      <div class="dashboard-card" style="background:#f3f4f6;padding:24px 32px;border-radius:12px;min-width:220px;flex:1;">
+        <h2 style="margin:0 0 8px 0;font-size:1.2em;color:#6366f1;">Total Users</h2>
+        <div id="totalUsers" style="font-size:2.5em;font-weight:bold;">-</div>
       </div>
-      <div class="stat-card">
-        <h2>Total Bookings</h2>
-        <p id="total-bookings">Loading...</p>
+      <div class="dashboard-card" style="background:#f3f4f6;padding:24px 32px;border-radius:12px;min-width:220px;flex:1;">
+        <h2 style="margin:0 0 8px 0;font-size:1.2em;color:#6366f1;">Total Bookings</h2>
+        <div id="totalBookings" style="font-size:2.5em;font-weight:bold;">-</div>
       </div>
-      <div class="stat-card">
-        <h2>Total Revenue</h2>
-        <p id="total-revenue">Loading...</p>
+      <div class="dashboard-card" style="background:#f3f4f6;padding:24px 32px;border-radius:12px;min-width:220px;flex:1;">
+        <h2 style="margin:0 0 8px 0;font-size:1.2em;color:#6366f1;">Admin Details</h2>
+        <div id="adminDetails" style="font-size:1.1em;line-height:1.6;">
+          <!-- Admin details will be loaded here -->
+        </div>
       </div>
     </div>
   </div>
 
   <!-- JavaScript -->
   <script>
-    // Simulated dynamic data fetching
-    document.getElementById("total-users").innerText = "";
-    document.getElementById("total-bookings").innerText = "";
-    document.getElementById("total-revenue").innerText = "";
+    async function loadAdminDashboard() {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        window.location.href = 'home.html';
+        return;
+      }
+      const adminUsername = 'admin user';
+      const adminPassword = 'pass3';
+      const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+      // Fetch admin details
+      const userRes = await fetch(`http://localhost:8080/api/users/${userId}`, { headers: { 'Authorization': basicAuth } });
+      if (!userRes.ok) {
+        window.location.href = 'home.html';
+        return;
+      }
+      const admin = await userRes.json();
+      if (admin.role !== 'ADMIN') {
+        window.location.href = 'home.html';
+        return;
+      }
+      document.getElementById('adminName').textContent = admin.name || admin.username || admin.email || 'Admin';
+      document.getElementById('adminDetails').innerHTML = `
+        <b>Name:</b> ${admin.name || admin.username || '-'}<br>
+        <b>Email:</b> ${admin.email || '-'}<br>
+        <b>Role:</b> ${admin.role || '-'}<br>
+        <b>User ID:</b> ${admin.id || '-'}
+      `;
+      // Fetch total users
+      const usersRes = await fetch('http://localhost:8080/api/users', { headers: { 'Authorization': basicAuth } });
+      if (usersRes.ok) {
+        const users = await usersRes.json();
+        document.getElementById('totalUsers').textContent = users.length;
+      } else {
+        document.getElementById('totalUsers').textContent = '-';
+      }
+      // Fetch total bookings
+      const bookingsRes = await fetch('http://localhost:8080/bookings', { headers: { 'Authorization': basicAuth } });
+      if (bookingsRes.ok) {
+        const bookings = await bookingsRes.json();
+        document.getElementById('totalBookings').textContent = bookings.length;
+      } else {
+        document.getElementById('totalBookings').textContent = '-';
+      }
+    }
+    window.addEventListener('DOMContentLoaded', loadAdminDashboard);
   </script>
 </body>
 </html>

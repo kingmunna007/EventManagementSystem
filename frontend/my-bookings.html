@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - EventEase</title>
+  <link rel="stylesheet" href="booking.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">EventEase</div>
+    <div class="nav-links">
+      <a href="/home.html">Home</a>
+      <a href="/booking.html">Book Event</a>
+      <a href="#" id="nav-profile" onclick="openProfileModal()" style="display:none;">Profile</a>
+      <a href="#" onclick="logoutUser()">Logout</a>
+    </div>
+  </div>
+  <div class="booking-container">
+    <h1>My Bookings</h1>
+    <div id="myBookingsList">Loading your bookings...</div>
+  </div>
+  <div id="profileModal" class="modal" style="display:none;">
+    <div class="modal-content" style="background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%); border-radius: 18px; max-width: 400px; width: 90%; margin: auto; padding: 32px 24px 24px 24px; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.18); animation: popIn 0.3s;">
+      <span class="close-btn" onclick="closeProfileModal()" style="position: absolute; top: 10px; right: 18px; font-size: 22px; cursor: pointer; color: #555; transition: color 0.2s;">&times;</span>
+      <div class="profile-avatar" id="profileAvatar" style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #6366f1 40%, #f472b6 100%); display: flex; align-items: center; justify-content: center; font-size: 36px; color: #fff; margin: 0 auto 16px auto; box-shadow: 0 2px 8px rgba(99,102,241,0.15);">👤</div>
+      <h2 style="text-align: center; color: #6366f1; margin-bottom: 8px;">Your Profile</h2>
+      <div id="profileDetails" style="text-align: center; margin-bottom: 12px; font-size: 17px; color: #222;">Loading...</div>
+      <form id="updateProfileForm" style="display:none; margin-top: 16px; background: #f1f5f9; border-radius: 8px; padding: 14px 10px 8px 10px; box-shadow: 0 1px 4px rgba(99,102,241,0.07);">
+        <label style="display: block; margin-bottom: 8px; color: #374151;">Name:<input type="text" id="profileName" required style="width: 95%; padding: 7px 8px; border: 1px solid #c7d2fe; border-radius: 5px; margin-top: 2px; margin-bottom: 10px; font-size: 15px;"></label>
+        <label style="display: block; margin-bottom: 8px; color: #374151;">Email:<input type="email" id="profileEmail" required style="width: 95%; padding: 7px 8px; border: 1px solid #c7d2fe; border-radius: 5px; margin-top: 2px; margin-bottom: 10px; font-size: 15px;"></label>
+        <label style="display: block; margin-bottom: 8px; color: #374151;">Password:<input type="password" id="profilePassword" placeholder="Leave blank to keep unchanged" style="width: 95%; padding: 7px 8px; border: 1px solid #c7d2fe; border-radius: 5px; margin-top: 2px; margin-bottom: 10px; font-size: 15px;"></label>
+        <button type="submit" style="background: linear-gradient(90deg, #6366f1 60%, #f472b6 100%); color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-size: 15px; margin: 8px auto 0 auto; display: block; cursor: pointer; transition: background 0.2s;">Update Profile</button>
+      </form>
+      <button id="editProfileBtn" style="margin-top:10px; background: linear-gradient(90deg, #6366f1 60%, #f472b6 100%); color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-size: 15px; display: block; cursor: pointer; transition: background 0.2s;">Edit Profile</button>
+    </div>
+  </div>
+  <style>
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .profile-avatar { transition: background 0.3s; }
+    .close-btn:hover { color: #e11d48 !important; }
+    #editProfileBtn:hover, #updateProfileForm button:hover { background: linear-gradient(90deg, #f472b6 40%, #6366f1 100%) !important; }
+  </style>
+  <script src="my-bookings.js"></script>
+  <script>
+    function logoutUser() {
+      localStorage.removeItem('userId');
+      alert('Logged out successfully!');
+      window.location.href = 'home.html';
+    }
+    function updateNavbarForAuth() {
+      const isLoggedIn = !!localStorage.getItem('userId');
+      var navProfile = document.getElementById('nav-profile');
+      if (navProfile) navProfile.style.display = isLoggedIn ? '' : 'none';
+    }
+    function openProfileModal() {
+      document.getElementById('profileModal').style.display = 'flex';
+      loadProfile();
+    }
+    function closeProfileModal() {
+      document.getElementById('profileModal').style.display = 'none';
+      document.getElementById('updateProfileForm').style.display = 'none';
+      document.getElementById('editProfileBtn').style.display = '';
+    }
+    async function loadProfile() {
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+      const adminUsername = 'admin user';
+      const adminPassword = 'pass3';
+      const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+      const res = await fetch(`http://localhost:8080/api/users/${userId}`, { headers: { 'Authorization': basicAuth } });
+      if (res.ok) {
+        const user = await res.json();
+        document.getElementById('profileDetails').innerHTML =
+          `<b>Name:</b> ${user.username}<br><b>Email:</b> ${user.email}<br><b>Role:</b> ${user.role}`;
+        document.getElementById('profileName').value = user.username;
+        document.getElementById('profileEmail').value = user.email;
+        document.getElementById('profilePassword').value = '';
+        document.getElementById('profileAvatar').textContent = user.username ? user.username[0].toUpperCase() : '👤';
+      } else {
+        document.getElementById('profileDetails').innerHTML = 'Failed to load profile.';
+      }
+    }
+    document.getElementById('editProfileBtn').onclick = function() {
+      document.getElementById('updateProfileForm').style.display = '';
+      this.style.display = 'none';
+    };
+    document.getElementById('updateProfileForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const userId = localStorage.getItem('userId');
+      const adminUsername = 'admin user';
+      const adminPassword = 'pass3';
+      const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+      const name = document.getElementById('profileName').value;
+      const email = document.getElementById('profileEmail').value;
+      const password = document.getElementById('profilePassword').value;
+      const body = { username: name, email: email };
+      if (password) body.password = password;
+      const res = await fetch(`http://localhost:8080/api/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': basicAuth },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        alert('Profile updated!');
+        loadProfile();
+        document.getElementById('updateProfileForm').style.display = 'none';
+        document.getElementById('editProfileBtn').style.display = '';
+      } else {
+        alert('Failed to update profile.');
+      }
+    };
+    // Ensure nav-profile is visible as soon as possible
+    document.addEventListener('DOMContentLoaded', updateNavbarForAuth);
+    window.addEventListener('pageshow', updateNavbarForAuth);
+    updateNavbarForAuth();
+  </script>
+</body>
+</html>

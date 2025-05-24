@@ -100,6 +100,76 @@ body {
     transform: scale(0.95);
   }
   
+  /* Booking Form Enhancements */
+  .booking-form .form-group {
+    margin-bottom: 18px;
+  }
+  
+  .booking-form label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+  }
+  
+  .booking-form input, .booking-form select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #bfc9d1;
+    border-radius: 5px;
+    font-size: 15px;
+    margin-top: 3px;
+    transition: border 0.2s;
+  }
+  
+  .booking-form input:focus, .booking-form select:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .booking-form .mini-btn {
+    background: linear-gradient(90deg, #6366f1 60%, #f472b6 100%);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 0;
+    transition: background 0.2s;
+  }
+  
+  .booking-form .mini-btn:hover {
+    background: linear-gradient(90deg, #f472b6 40%, #6366f1 100%);
+  }
+  
+  .booking-form .submit-btn {
+    width: 100%;
+    background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .booking-form .submit-btn:hover {
+    background: linear-gradient(90deg, #00c6ff 40%, #007bff 100%);
+  }
+  
+  #totalPrice {
+    font-size: 1.2em;
+    letter-spacing: 1px;
+  }
+  
+  #discountStatus {
+    font-size: 0.98em;
+    margin-left: 8px;
+  }
+  
   /* Animation */
   @keyframes slideIn {
     from {
@@ -111,4 +181,3 @@ body {
       transform: translateY(0);
     }
   }
-  

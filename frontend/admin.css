@@ -5,17 +5,38 @@ body {
   }
   
   .navbar {
+    background: linear-gradient(90deg, #232526 0%, #414345 100%); /* Elegant dark gradient */
+    color: #fff;
+    padding: 18px 40px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    background-color: #007bff;
-    color: white;
-    padding: 15px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+    border-bottom: 3px solid #a5b4fc;
   }
   
-  .navbar a {
-    color: white;
-    margin-left: 15px;
+  .navbar .logo {
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(44,62,80,0.12);
+  }
+  
+  .navbar .nav-links a {
+    color: #e0e0e0;
+    margin-left: 32px;
     text-decoration: none;
+    font-size: 1.08em;
+    font-weight: 500;
+    transition: color 0.2s;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+  }
+  
+  .navbar .nav-links a:hover {
+    color: #a5b4fc;
+    border-bottom: 2px solid #a5b4fc;
   }
   
   .admin-container {
@@ -51,4 +72,3 @@ body {
   .btn-add { background: #28a745; color: white; }
   .btn-edit { background: #ffc107; color: black; }
   .btn-delete { background: #dc3545; color: white; }
-  

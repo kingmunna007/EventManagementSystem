@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Us | EventEase</title>
+  <link rel="stylesheet" href="about.css">
+  <link rel="stylesheet" href="home.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">EventEase</div>
+      <ul class="nav-links">
+        <li id="nav-home"><a href="/home.html">Home</a></li>
+        <li id="nav-booking" style="display:none;"><a href="/booking.html">Book Event</a></li>
+        <li id="nav-login"><a href="/login.html">Login</a></li>
+        <li id="nav-signup"><a href="/signup.html">Signup</a></li>
+        <li id="nav-logout" style="display:none;"><a href="#" onclick="logoutUser()">Logout</a></li>
+        <li><a href="About-us.html">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section class="about-container">
+    <div class="header">
+      <h1>About EventEase</h1>
+      <p>Your One-Stop Destination for Effortless Event Planning</p>
+    </div>
+
+    <div class="section">
+      <h2>Who We Are</h2>
+      <p>EventEase is a dynamic team of event planners and tech professionals who believe that organizing an event shouldn't be stressful. Founded in 2025, we combine technology and creativity to provide a seamless event booking experience.</p>
+    </div>
+
+    <div class="section">
+      <h2>What We Do</h2>
+      <p>We offer a complete event management platform where users can:</p>
+      <ul>
+        <li>Choose from pre-defined event types (weddings, birthdays, conferences, and more)</li>
+        <li>Customize packages based on guest count and preferences</li>
+        <li>Apply discount coupons (10–15%) for great savings</li>
+        <li>Make secure payments online via Stripe</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Why Choose Us?</h2>
+      <ul>
+        <li>Transparent pricing with real-time cost estimates</li>
+        <li>Modern, user-friendly interface</li>
+        <li>Secure and seamless booking process</li>
+        <li>Backed by a passionate and experienced team</li>
+      </ul>
+    </div>
+
+    <div class="section mission">
+      <h2>Our Mission</h2>
+      <p>To simplify event planning and empower users to create memorable moments with ease and confidence.</p>
+    </div>
+
+    <div class="section vision">
+      <h2>Our Vision</h2>
+      <p>To become the leading online platform for smart, stress-free event management across the globe.</p>
+    </div>
+
+    <div class="section team">
+      <h2>Meet Our Team</h2>
+      <div class="team-grid">
+        <div class="member">
+          <img src="/images/WhatsApp Image 2025-02-06 at 20.29.27_65492e71.jpg" alt="Founder">
+          <h3>Hariom Kumar </h3>
+          <p>Founder & Lead Developer</p>
+        </div>
+        <div class="member">
+          <img src="/images/WhatsApp Image 2025-05-16 at 20.18.16_84f7015c.jpg" alt="Co-Founder">
+          <h3>Kislay Raj</h3>
+          <p>Co-Founder & UI/UX Designer</p>
+        </div>
+        <div class="member">
+          <img src="/images/1000092266.webp" alt="Co-Founder">
+          <h3>Harsh Agrawal</h3>
+          <p>Co-Founder & Fund Manager</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <h2>Ready to Plan Your Dream Event?</h2>
+      <a href="/home.html" class="cta-button">Explore Events</a>
+    </div>
+
+    <div class="section contact-section">
+      <h2>Contact Us</h2>
+      <div class="contact-flex">
+        <div class="contact-info">
+          <h3>Get in Touch</h3>
+          <p>Have questions, suggestions, or need help? Reach out to our team!</p>
+          <ul>
+            <li><b>Email:</b> <a href="mailto:support@eventease.com">support@eventease.com</a></li>
+            <li><b>Phone:</b> <a href="tel:+917970355727">+91 79703 55727</a></li>
+            <li><b>Address:</b> 123 EventEase Lane, New Delhi, India</li>
+          </ul>
+        </div>
+        <form class="contact-form" id="contactForm" autocomplete="off">
+          <label for="contactName">Name</label>
+          <input type="text" id="contactName" name="contactName" required placeholder="Your Name">
+          <label for="contactEmail">Email</label>
+          <input type="email" id="contactEmail" name="contactEmail" required placeholder="you@email.com">
+          <label for="contactMessage">Message</label>
+          <textarea id="contactMessage" name="contactMessage" rows="4" required placeholder="How can we help you?"></textarea>
+          <button type="submit">Send Message</button>
+          <div id="contactStatus" style="margin-top:10px;font-size:1em;"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+  <script>
+function updateNavbarForAuth() {
+  const isLoggedIn = !!localStorage.getItem('userId');
+  document.getElementById('nav-login').style.display = isLoggedIn ? 'none' : '';
+  document.getElementById('nav-signup').style.display = isLoggedIn ? 'none' : '';
+  document.getElementById('nav-logout').style.display = isLoggedIn ? '' : 'none';
+  document.getElementById('nav-booking').style.display = isLoggedIn ? '' : 'none';
+}
+function logoutUser() {
+  localStorage.removeItem('userId');
+  alert('Logged out successfully!');
+  updateNavbarForAuth();
+  window.location.href = 'home.html';
+}
+document.addEventListener('DOMContentLoaded', updateNavbarForAuth);
+document.getElementById('contactForm').onsubmit = async function(e) {
+  e.preventDefault();
+  const status = document.getElementById('contactStatus');
+  status.style.color = '#6366f1';
+  status.textContent = 'Sending...';
+
+  const name = document.getElementById('contactName').value;
+  const email = document.getElementById('contactEmail').value;
+  const message = document.getElementById('contactMessage').value;
+
+  // Use HTTP Basic Auth for now
+  const username = 'admin user'; // <-- replace with your username
+  const password = 'pass3'; // <-- replace with your password
+  const basicAuth = 'Basic ' + btoa(username + ':' + password);
+
+  try {
+    const res = await fetch('http://localhost:8080/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': basicAuth
+      },
+      body: JSON.stringify({ name, email, message })
+    });
+    if (res.ok) {
+      status.textContent = 'Thank you for reaching out! We will get back to you soon.';
+      this.reset();
+    } else {
+      status.style.color = 'red';
+      status.textContent = 'Failed to send message. Please try again later.';
+    }
+  } catch (err) {
+    status.style.color = 'red';
+    status.textContent = 'Error sending message. Please try again later.';
+  }
+};
+</script>
+</body>
+</html>

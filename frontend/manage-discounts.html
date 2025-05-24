@@ -5,15 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Discounts</title>
   <link rel="stylesheet" href="admin.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
   <!-- Navbar -->
   <div class="navbar">
-    <div class="logo">Admin Dashboard</div>
+    <div class="logo">EventEase</div>
     <div class="nav-links">
       <a href="admin-dashboard.html">Dashboard</a>
       <a href="manage-events.html">Manage Events</a>
       <a href="manage-discounts.html">Manage Discounts</a>
+      <a href="manage-users.html">Manage Users</a>
+      <a href="manage-bookings.html">Manage Bookings</a>
       <a href="/home.html">Logout</a>
     </div>
   </div>
@@ -21,7 +24,7 @@
   <!-- Manage Discounts -->
   <div class="admin-container">
     <h1>Manage Discounts</h1>
-    <button onclick="addCoupon()" class="btn-add">Add New Coupon</button>
+    <button onclick="showAddDiscountModal()" class="btn-add">Add New Discount</button>
     <table id="coupons-table">
       <thead>
         <tr>
@@ -31,47 +34,191 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>VIP20</td>
-          <td>20</td>
-          <td>
-            <button class="btn-edit" onclick="editCoupon(this)">Edit</button>
-            <button class="btn-delete" onclick="deleteCoupon(this)">Delete</button>
-          </td>
-        </tr>
+        <!-- Discounts will be loaded here dynamically -->
       </tbody>
     </table>
   </div>
 
+  <!-- Add Discount Modal -->
+  <div id="addDiscountModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;z-index:1000;">
+    <div style="background:#fff;padding:24px 32px;border-radius:8px;min-width:300px;max-width:90vw;">
+      <h2>Add New Discount</h2>
+      <form id="addDiscountForm">
+        <label>Coupon Code</label>
+        <input type="text" id="newDiscountCode" required style="width:100%;margin-bottom:10px;">
+        <label>Discount (%)</label>
+        <input type="number" id="newDiscountPercent" min="1" max="100" required style="width:100%;margin-bottom:10px;">
+        <div style="text-align:right;">
+          <button type="button" onclick="hideAddDiscountModal()">Cancel</button>
+          <button type="submit">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Discount Modal -->
+  <div id="editDiscountModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;z-index:1000;">
+    <div style="background:#fff;padding:24px 32px;border-radius:8px;min-width:300px;max-width:90vw;">
+      <h2>Update Discount</h2>
+      <form id="editDiscountForm">
+        <label>Coupon Code</label>
+        <input type="text" id="editDiscountCode" readonly style="width:100%;margin-bottom:10px;">
+        <label>Discount (%)</label>
+        <input type="number" id="editDiscountPercent" min="1" max="100" required style="width:100%;margin-bottom:10px;">
+        <div style="text-align:right;">
+          <button type="button" onclick="hideEditDiscountModal()">Cancel</button>
+          <button type="submit">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- JavaScript -->
   <script>
-    function addCoupon() {
-      const table = document.getElementById("coupons-table").getElementsByTagName("tbody")[0];
-      const newRow = `
-        <tr>
-          <td>NEWCODE</td>
-          <td>10</td>
-          <td>
-            <button class="btn-edit" onclick="editCoupon(this)">Edit</button>
-            <button class="btn-delete" onclick="deleteCoupon(this)">Delete</button>
-          </td>
-        </tr>
-      `;
-      table.insertAdjacentHTML('beforeend', newRow);
+    // Show/hide modal
+    function showAddDiscountModal() {
+      document.getElementById('addDiscountModal').style.display = 'flex';
+    }
+    function hideAddDiscountModal() {
+      document.getElementById('addDiscountModal').style.display = 'none';
+    }
+    function hideEditDiscountModal() {
+      document.getElementById('editDiscountModal').style.display = 'none';
     }
 
-    function editCoupon(button) {
-      const row = button.parentElement.parentElement;
-      const code = prompt("Edit Coupon Code:", row.cells[0].innerText);
-      const discount = prompt("Edit Discount Percentage:", row.cells[1].innerText);
-
-      if (code) row.cells[0].innerText = code;
-      if (discount) row.cells[1].innerText = discount;
+    // Fetch and display all discounts
+    async function loadDiscounts() {
+      const tableBody = document.getElementById('coupons-table').getElementsByTagName('tbody')[0];
+      const adminUsername = 'admin user';
+      const adminPassword = 'pass3';
+      const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+      try {
+        const res = await fetch('http://localhost:8080/api/discounts', {
+          headers: { 'Authorization': basicAuth }
+        });
+        if (!res.ok) throw new Error('Failed to fetch discounts');
+        const discounts = await res.json();
+        tableBody.innerHTML = discounts.map(discount => `
+          <tr data-code="${discount.code}">
+            <td>${discount.code}</td>
+            <td>${discount.percentage}</td>
+            <td>
+              <button class="btn-edit" onclick="showEditDiscountModal('${discount.code}', ${discount.percentage})">Update</button>
+              <button class="btn-delete" onclick="deleteDiscount('${discount.code}')">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tableBody.innerHTML = '<tr><td colspan="3">Failed to load discounts.</td></tr>';
+      }
     }
 
-    function deleteCoupon(button) {
-      button.parentElement.parentElement.remove();
+    // Show/hide edit modal
+    function showEditDiscountModal(code, percentage) {
+      document.getElementById('editDiscountCode').value = code;
+      document.getElementById('editDiscountPercent').value = percentage;
+      document.getElementById('editDiscountModal').style.display = 'flex';
     }
+
+    // Add new discount
+    document.getElementById('addDiscountForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const code = document.getElementById('newDiscountCode').value.trim();
+      const percentage = parseInt(document.getElementById('newDiscountPercent').value, 10);
+      if (!code || !percentage) return;
+      const adminUsername = 'admin user';
+      const adminPassword = 'pass3';
+      const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+      try {
+        const res = await fetch('http://localhost:8080/api/discounts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': basicAuth },
+          body: JSON.stringify({ code, percentage })
+        });
+        if (res.ok) {
+          hideAddDiscountModal();
+          loadDiscounts();
+        } else {
+          alert('Failed to add discount.');
+        }
+      } catch (err) {
+        alert('Error adding discount.');
+      }
+    };
+
+    // Update discount
+    document.getElementById('editDiscountForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const code = document.getElementById('editDiscountCode').value.trim();
+      const percentage = parseInt(document.getElementById('editDiscountPercent').value, 10);
+      if (!code || !percentage) return;
+      const adminUsername = 'admin user';
+      const adminPassword = 'pass3';
+      const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+      try {
+        const res = await fetch(`http://localhost:8080/api/discounts/${encodeURIComponent(code)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': basicAuth },
+          body: JSON.stringify({ percentage })
+        });
+        if (res.ok) {
+          hideEditDiscountModal();
+          loadDiscounts();
+        } else {
+          alert('Failed to update discount.');
+        }
+      } catch (err) {
+        alert('Error updating discount.');
+      }
+    };
+
+    // Delete discount
+    async function deleteDiscount(code) {
+      if (!confirm('Are you sure you want to delete this discount?')) return;
+      const adminUsername = 'admin user';
+      const adminPassword = 'pass3';
+      const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+      try {
+        const res = await fetch(`http://localhost:8080/api/discounts/${encodeURIComponent(code)}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': basicAuth }
+        });
+        if (res.ok) {
+          loadDiscounts();
+        } else {
+          alert('Failed to delete discount.');
+        }
+      } catch (err) {
+        alert('Error deleting discount.');
+      }
+    }
+
+    // Admin page access control
+    window.addEventListener('DOMContentLoaded', async () => {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        window.location.href = 'home.html';
+        return;
+      }
+      const adminUsername = 'admin user';
+      const adminPassword = 'pass3';
+      const basicAuth = 'Basic ' + btoa(adminUsername + ':' + adminPassword);
+      try {
+        const res = await fetch(`http://localhost:8080/api/users/${userId}`, { headers: { 'Authorization': basicAuth } });
+        if (!res.ok) {
+          window.location.href = 'home.html';
+          return;
+        }
+        const user = await res.json();
+        if (user.role !== 'ADMIN') {
+          window.location.href = 'home.html';
+        }
+        // else: allow access
+        loadDiscounts();
+      } catch (err) {
+        window.location.href = 'home.html';
+      }
+    });
   </script>
 </body>
 </html>
