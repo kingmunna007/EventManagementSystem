@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import com.eventmanagement.backend.security.JwtUtil;
+
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +27,11 @@ public class UsersController {
     private UsersService usersService;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @GetMapping
-   // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Users>> getAllUsers() {
         List<Users> users = usersService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -57,44 +61,25 @@ public class UsersController {
         usersService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-//    @GetMapping("/login")
-//    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
-//        Users user = usersService.authenticateUser(email, password);
-//
-//        if (user.getRole().equals(Users.Role.ADMIN)) {
-//            return new ResponseEntity<>("Redirect to Admin Dashboard", HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>("Redirect to User Dashboard", HttpStatus.OK);
-//        }
-//    }
-//@GetMapping("/login")
-//public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
-//    Users user = usersService.authenticateUser(email, password);
-//    if (user != null) {
-//        return ResponseEntity.ok(Map.of(
-//                "id", user.getId(),
-//                "role", user.getRole(),
-//                "username", user.getUsername()
-//        ));
-//    } else {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-//    }
-//}
+
 @PostMapping("/login")
 public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-    Users user = usersService.findByEmail(loginRequest.getEmail());
+    Users user = usersService.findByIdentifier(loginRequest.getIdentifier());
     if (user == null) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
     }
     if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
     }
+    // Generate JWT token
+    String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
     // Map to safe DTO
     UserLoginResponse response = new UserLoginResponse();
     response.setId(user.getId());
     response.setUsername(user.getUsername());
     response.setRole(user.getRole().toString());
     response.setEmail(user.getEmail());
+    response.setToken(token);
     return ResponseEntity.ok(response);
 }
 

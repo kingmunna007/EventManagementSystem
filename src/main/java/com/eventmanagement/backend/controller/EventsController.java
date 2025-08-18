@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.List;
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = {"http://127.0.0.1:5500", "http://localhost:5173"})
 @RestController
 @RequestMapping("/api/events")
 public class EventsController {
@@ -20,12 +20,12 @@ public class EventsController {
     @Autowired
     private EventsService eventsService;
 
-//    @PostMapping
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<Events> createEvent(@RequestBody Events event) {
-//        Events createdEvent = eventsService.createEvent(event);
-//        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
-//    }
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Events> createEvent(@RequestBody Events event) {
+        Events createdEvent = eventsService.createEvent(event);
+        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+    }
 
     @GetMapping
     public ResponseEntity<List<Events>> getAllEvents() {
@@ -40,18 +40,18 @@ public class EventsController {
     }
 
     // Update an event (Admin only)
-//    @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<Events> updateEvent(@PathVariable Long id, @RequestBody Events updatedEvent) {
-//        Events event = eventsService.updateEvent(id, updatedEvent);
-//        return new ResponseEntity<>(event, HttpStatus.OK);
-//    }
-//
-//    // Delete an event (Admin only)
-//    @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
-//        eventsService.deleteEvent(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Events> updateEvent(@PathVariable Long id, @RequestBody Events updatedEvent) {
+        Events event = eventsService.updateEvent(id, updatedEvent);
+        return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+
+    // Delete an event (Admin only)
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+        eventsService.deleteEvent(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

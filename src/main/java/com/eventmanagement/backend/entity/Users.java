@@ -3,6 +3,8 @@ package com.eventmanagement.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Users")
 @Data
@@ -23,9 +25,17 @@ public class Users {
 
     @Column(name = "Password")
     private String password;
+    @Column(name = "Phone")
+    private String phone;
+    @Column(name = "ProfilePic")
+    private String profilePictureUrl;
 
     @Column(name = "role")
     private String role = Role.USER;
+    @Column(name = "CreatedAt")
+    private LocalDateTime createdAt;
+    @Column(name = "UpdatedAt")
+    private LocalDateTime updatedAt;
 
    public static class Role{
        public static final String USER = "USER";

@@ -58,25 +58,18 @@ public class DiscountsController {
         return discountsService.save(discount);
     }
 
-    // Update discount percentage by code
     @PutMapping("/{code}")
-    public ResponseEntity<Discounts> updateDiscount(@PathVariable String code, @RequestBody Map<String, Integer> body) {
-        Optional<Object> optional =  discountsRepository.findByCode(code);
-        if (optional.isEmpty()) return ResponseEntity.notFound().build();
-        Discounts discount = (Discounts) optional.get();
-        Integer percentage = body.get("percentage");
-        if (percentage == null) return ResponseEntity.badRequest().build();
-        discount.setPercentage(percentage);
-        discountsRepository.save(discount);
-        return ResponseEntity.ok(discount);
+    public ResponseEntity<Discounts> updateDiscount(@PathVariable String code, @RequestBody Discounts discount) {
+        try {
+            return ResponseEntity.ok(discountsService.updateDiscount(code, discount));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // Delete discount by code
     @DeleteMapping("/{code}")
     public ResponseEntity<Void> deleteDiscount(@PathVariable String code) {
-        Optional<Object> optional = discountsRepository.findByCode(code);
-        if (optional.isEmpty()) return ResponseEntity.notFound().build();
-        discountsRepository.delete((Discounts) optional.get());
+        discountsService.deleteDiscount(code);
         return ResponseEntity.noContent().build();
     }
 

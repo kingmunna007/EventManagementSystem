@@ -2,82 +2,79 @@ package com.eventmanagement.backend.service;
 
 import com.eventmanagement.backend.entity.Users;
 import com.eventmanagement.backend.repository.UsersRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsersService {
+
     @Autowired
     private UsersRepository usersRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public Users registerUser(Users user) {
-        if (usersRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email is already in use.");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(Users.Role.USER);
-        return usersRepository.save(user);
-    }
-
-    public Users authenticateUser(String email, String rawPassword) {
-        Users user = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
-
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new IllegalArgumentException("Invalid credentials.");
-        }
-        return user;
-    }
-
-    public Users updateUser(Long userId, Users updatedDetails) {
-        Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-
-        user.setUsername(updatedDetails.getUsername());
-        user.setEmail(updatedDetails.getEmail());
-        user.setPassword(passwordEncoder.encode(updatedDetails.getPassword()));
-
-        return usersRepository.save(user);
-    }
-
-
-    public Users findUserById(Long id) {
-        return usersRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
-    }
-
-    public Users findUserByEmail(String email) {
-        return usersRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
-    }
-
-    public void deleteUser(Long userId) {
-        usersRepository.deleteById(userId);
-    }
+    @Autowired
+    private NotificationService notificationService;
 
     public List<Users> getAllUsers() {
         return usersRepository.findAll();
     }
 
-    public void resetPassword(Long userId, String newPassword) {
-        Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-
-        user.setPassword(passwordEncoder.encode(newPassword));
-        usersRepository.save(user);
+    public Users findUserById(Long id) {
+        return usersRepository.findById(id).orElse(null);
     }
 
+    public Users registerUser(Users user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Users createdUser = usersRepository.save(user);
+        // Notify user
+        notificationService.notifyUserAndEmail(
+            createdUser,
+            "USER_REGISTRATION",
+            "Welcome to Event Management!",
+            "Welcome to Event Management!",
+            "Dear " + createdUser.getUsername() + ",\n\nWelcome to Event Management! Your account has been created."
+        );
+        // Optionally notify admin
+        notificationService.notifyAdminAndEmail(
+            "USER_REGISTRATION",
+            "New user registered: " + createdUser.getUsername(),
+            "New User Registered",
+            "A new user has registered: " + createdUser.getUsername() + " (" + createdUser.getEmail() + ")"
+        );
+        return createdUser;
+    }
 
-    public Users findByEmail(String email) {
-        return usersRepository.findByEmail(email).orElse(null);
+    public Users updateUser(Long id, Users user) {
+        Users existingUser = findUserById(id);
+        if (existingUser != null) {
+            existingUser.setUsername(user.getUsername());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setRole(user.getRole());
+            return usersRepository.save(existingUser);
+        }
+        return null;
+    }
+
+    public void deleteUser(Long id) {
+        usersRepository.deleteById(id);
+    }
+
+    public void resetPassword(Long id, String newPassword) {
+        Users user = findUserById(id);
+        if (user != null) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            usersRepository.save(user);
+        }
+    }
+
+    public Users findByIdentifier(String identifier) {
+        return usersRepository.findByEmail(identifier)
+                .or(() -> usersRepository.findByUsername(identifier))
+                .orElse(null);
     }
 }

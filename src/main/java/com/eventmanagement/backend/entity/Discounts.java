@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Discounts")
 @Data
@@ -24,4 +26,7 @@ public class Discounts {
     @Min(0)
     @Max(100)
     private Integer percentage;
+    private LocalDateTime validFrom;
+    private LocalDateTime validTo;
+    private Boolean isActive;
 }
