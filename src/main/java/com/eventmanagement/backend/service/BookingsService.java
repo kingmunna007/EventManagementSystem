@@ -64,7 +64,7 @@ public class BookingsService {
 
         Venues venue = null;
         if (venueId != null) {
-            venue = venueRepository.findById(venueId).orElse(null);
+            venue = venueRepository.findById(Long.valueOf(venueId)).orElse(null);
         }
 
         Bookings booking = new Bookings();
@@ -124,7 +124,7 @@ public class BookingsService {
 
         Venues venue = null;
         if (venueId != null) {
-            venue = venueRepository.findById(venueId).orElse(null);
+            venue = venueRepository.findById(Long.valueOf(venueId)).orElse(null);
         }
 
         Bookings booking = new Bookings();
@@ -303,7 +303,7 @@ public class BookingsService {
 
         BigDecimal venueCost = BigDecimal.ZERO;
         if (venueId != null && venueRepository != null) {
-            Venues venue = venueRepository.findById(venueId).orElse(null);
+            Venues venue = venueRepository.findById(Long.valueOf(venueId)).orElse(null);
             if (venue != null && venue.getBasePrice() != null && bookingStart != null && bookingEnd != null) {
                 long hours = Duration.between(bookingStart, bookingEnd).toHours();
                 BigDecimal hoursBd = BigDecimal.valueOf(hours)

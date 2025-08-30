@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import com.eventmanagement.backend.security.JwtUtil;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class UsersController {
     private JwtUtil jwtUtil;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Users>> getAllUsers() {
         List<Users> users = usersService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -49,14 +50,21 @@ public class UsersController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Users> updateUser(@PathVariable Long id, @RequestBody Users user) {
-        Users updatedUser = usersService.updateUser(id, user);
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Users> updateUser(
+            @PathVariable Long id,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) MultipartFile profileImage) {
+
+        Users updatedUser = usersService.updateUserWithImage(id, username, email, phone, profileImage);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         usersService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -80,12 +88,26 @@ public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
     response.setRole(user.getRole().toString());
     response.setEmail(user.getEmail());
     response.setToken(token);
+    response.setPhone(user.getPhone());
     return ResponseEntity.ok(response);
 }
 
-    @PutMapping("/{id}/reset-password")
-    public ResponseEntity<Void> resetPassword(@PathVariable Long id, @RequestParam String newPassword) {
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> resetPassword(@PathVariable Long id, @RequestBody Map<String, String> passwords) {
+        String currentPassword = passwords.get("currentPassword");
+        String newPassword = passwords.get("newPassword");
+
+        Users user = usersService.findUserById(id);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Current password is incorrect");
+        }
+
         usersService.resetPassword(id, newPassword);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok("Password updated successfully");
     }
+
 }

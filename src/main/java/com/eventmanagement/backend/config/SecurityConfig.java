@@ -43,28 +43,28 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Public routes (Swagger, Auth, Events, etc.)
+                        // Public routes
                         .requestMatchers(
                                 "/",
                                 "/api/users/login",
                                 "/api/users/post",
-                                "/api/events/**",
                                 "/api/bookings/user",
                                 "/api/bookings/calculate-price",
                                 "/api/venues/**",
-                                "/api/discounts/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
-
-                        // (Optional) Open read access to venues via GET
-                        .requestMatchers(HttpMethod.GET, "/api/venues/**").permitAll()
-                        // Allow read access to bookings for users (GET endpoints)
+                        // Allow GET /api/events for all
+                        .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/**","/api/discounts/**").permitAll()
+                        // Require ROLE_ADMIN for POST, PUT, DELETE
+                        .requestMatchers(HttpMethod.POST, "/api/events/**","/api/discounts/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/events/**","/api/discounts/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/discounts/**","/api/events/**").hasAuthority("ROLE_ADMIN")
+                        // Allow GET for bookings
                         .requestMatchers(HttpMethod.GET, "/api/bookings/**").permitAll()
-
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
@@ -96,7 +96,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow the local dev servers used by the frontend (Vite/other)
         configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:5500", "http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

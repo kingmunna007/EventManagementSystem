@@ -22,7 +22,6 @@ public class BookingDTO {
     private String userEmail;
     private Long venueId;
     private Long eventId;
-
     private String discountCode;
     private LocalDateTime eventStartDateTime;
     private LocalDateTime eventEndDateTime;

@@ -13,5 +13,6 @@ public class UserLoginResponse {
     private String role;
     private String email;
     private String token;
+    private String phone;
     // getters and setters
 }
